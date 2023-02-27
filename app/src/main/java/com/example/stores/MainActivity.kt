@@ -18,8 +18,8 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         setContentView(mBinding.root)
 
         mBinding.btnSave.setOnClickListener {
-            val store = Store(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
-            mAdapter.add(store)
+            val storeEntity = StoreEntity(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
+            mAdapter.add(storeEntity)
 
         }
 
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     }
 
     //OnClickListener
-    override fun onClick(store: Store) {
+    override fun onClick(storeEntity: StoreEntity) {
 
     }
 }
