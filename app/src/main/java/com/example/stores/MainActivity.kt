@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mBinding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.btnSave.setOnClickListener {
+        mBinding.btnSave.setOnClickListener {// este metodo lo usamos para agregar una historia
             val store = StoreEntity(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
 
             Thread {//para insertar en un segundo hilo
@@ -80,8 +80,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             StoreApplication.database.storeDao().deleteStore(storeEntity)
             queue.add(storeEntity)
         }.start()
-
-
         mAdapter.delete(queue.take())
+
     }
 }
