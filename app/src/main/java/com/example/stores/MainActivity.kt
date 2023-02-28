@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.stores.databinding.ActivityMainBinding
+import java.util.concurrent.LinkedBlockingQueue
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
@@ -36,17 +38,50 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mAdapter= StoreAdapter(mutableListOf(),this)  //mandamos hablar al adapter
         mGridLayout=GridLayoutManager(this,2) //configuracion del grid
 
+        getStores()
+
         mBinding.recyclerView.apply {
             setHasFixedSize(true)//se utiliza para que no cambie de tamaño al especificado en el layout
             layoutManager =mGridLayout //se utiliza para indicarle que va ser de tipo grid
             adapter = mAdapter
         }
 
+    }
 
+    private fun getStores(){ //Funcion para traernos la consulta de las stores en el hilo principal de android
+        val queue = LinkedBlockingQueue<MutableList<StoreEntity>>() // configuracion de la cola
+        Thread{
+            val stores = StoreApplication.database.storeDao().getAllStores()
+            queue.add(stores)
+        }.start()
+
+        mAdapter.setStores(queue.take())
     }
 
     //OnClickListener
     override fun onClick(storeEntity: StoreEntity) {
 
+    }
+
+    override fun onFavoriteStore(storeEntity: StoreEntity) { // Funcion para traernos los favoritos
+        storeEntity.isFavorite=!storeEntity.isFavorite
+        val queue = LinkedBlockingQueue<StoreEntity>()
+        Thread{
+            StoreApplication.database.storeDao().updateStore(storeEntity)
+            queue.add(storeEntity)
+        }.start()
+
+        mAdapter.update(queue.take())
+    }
+
+    override fun onDeleteStore(storeEntity: StoreEntity) {  // Funcion para eliminar un elemento
+        val queue = LinkedBlockingQueue<StoreEntity>()
+        thread {
+            StoreApplication.database.storeDao().deleteStore(storeEntity)
+            queue.add(storeEntity)
+        }.start()
+
+
+        mAdapter.delete(queue.take())
     }
 }
