@@ -18,8 +18,13 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         setContentView(mBinding.root)
 
         mBinding.btnSave.setOnClickListener {
-            val storeEntity = StoreEntity(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
-            mAdapter.add(storeEntity)
+            val store = StoreEntity(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
+
+            Thread {//para insertar en un segundo hilo
+                StoreApplication.database.storeDao().addStore(store)
+            }.start()
+
+            mAdapter.add(store)
 
         }
 
