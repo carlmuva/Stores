@@ -23,8 +23,14 @@
             app:counterEnabled="true"
             app:startIconDrawable="@drawable/ic_store"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:maxLength="@integer/counter_max_name" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPhone"
@@ -36,7 +42,6 @@
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/ic_local_phone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
@@ -44,6 +49,7 @@
                 android:maxLength="@integer/counter_max_phone"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -53,7 +59,6 @@
             android:hint="@string/hint_website"
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/ic_link">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWebsite"
                 android:layout_width="match_parent"
@@ -63,15 +68,8 @@
                 android:minLines="@integer/lines_url_website"
                 android:textAppearance="?attr/textAppearanceCaption"
                 android:textColor="@color/color_link" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords"
-                android:maxLength="@integer/counter_max_name" />
-
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,14 +79,13 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/hint_photo_url"
                 app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/ic_link">
-
+                app:startIconDrawable="@drawable/ic_link"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPhotoUrl"
                     android:layout_width="match_parent"
@@ -98,7 +95,6 @@
                     android:minLines="@integer/lines_url_photo"
                     android:textAppearance="?attr/textAppearanceCaption"
                     android:textColor="@color/color_link" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
@@ -106,10 +102,8 @@
                 android:layout_width="@dimen/photo_size_thumb"
                 android:layout_height="@dimen/photo_size_thumb"
                 android:layout_marginStart="@dimen/common_padding_default"
-                android:baselineAligned="false"
                 android:contentDescription="@string/description_img_photo"
                 android:src="@drawable/ic_image" />
-
 
         </LinearLayout>
 
