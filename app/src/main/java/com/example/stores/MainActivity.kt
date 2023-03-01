@@ -7,7 +7,7 @@ import com.example.stores.databinding.ActivityMainBinding
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
 
-class MainActivity : AppCompatActivity(), OnClickListener {
+class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
 
     private lateinit var  mBinding:ActivityMainBinding
     private lateinit var  mAdapter: StoreAdapter //con esto no traemos lo del adapter
@@ -42,9 +42,11 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         fragmentTransaction.add(R.id.containerMain,fragment)
+        fragmentTransaction.addToBackStack(null)// se usa para poder retroceder en la actividad
         fragmentTransaction.commit()   // configuracion basica para lanzar un fragmento en kotlin
 
-        mBinding.idFab.hide() // para ocultar el boton flotante
+        //mBinding.idFab.hide() // para ocultar el boton flotante
+        hideFab()
     }
 
     private fun setupRecyclerView() {  //configuracion del grid
@@ -95,5 +97,12 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         }.start()
         mAdapter.delete(queue.take())
 
+    }
+
+    /*
+    *MainAux
+     */
+    override fun hideFab(isVisible: Boolean) { // configuracion del boton flotante
+        if (isVisible) mBinding.idFab.show() else mBinding.idFab.hide()
     }
 }
