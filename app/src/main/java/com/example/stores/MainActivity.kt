@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mBinding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.btnSave.setOnClickListener {// este metodo lo usamos para agregar una historia
+/*        mBinding.btnSave.setOnClickListener {// este metodo lo usamos para agregar una historia
             val store = StoreEntity(name = mBinding.etName.text.toString().trim()) //Con esto nos traemos lo que esta en et de la main act, el metodo trim es para quitar espacios
 
             Thread {//para insertar en un segundo hilo
@@ -27,11 +27,24 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             }.start()
 
             mAdapter.add(store)
+        }*/
 
-        }
+        mBinding.idFab.setOnClickListener { launchEditFragment() }
 
         setupRecyclerView()
 
+    }
+
+    private fun launchEditFragment() { // para lanzar fratment
+        val fragment = EditStoreFragment()
+
+        val fragmentManager = supportFragmentManager // para controlar nuestro fragment
+        val fragmentTransaction = fragmentManager.beginTransaction()
+
+        fragmentTransaction.add(R.id.containerMain,fragment)
+        fragmentTransaction.commit()   // configuracion basica para lanzar un fragmento en kotlin
+
+        mBinding.idFab.hide() // para ocultar el boton flotante
     }
 
     private fun setupRecyclerView() {  //configuracion del grid
