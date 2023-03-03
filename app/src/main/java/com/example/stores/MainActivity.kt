@@ -35,8 +35,9 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
 
     }
 
-    private fun launchEditFragment() { // para lanzar fratment
+    private fun launchEditFragment(args:Bundle?=null) { // para lanzar fratment
         val fragment = EditStoreFragment()
+        if (args != null) fragment.arguments=args  // argumentos
 
         val fragmentManager = supportFragmentManager // para controlar nuestro fragment
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -74,7 +75,11 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
     }
 
     //OnClickListener
-    override fun onClick(storeEntity: StoreEntity) {
+    override fun onClick(storeId: Long) {
+        val args =Bundle()
+        args.putLong(getString(R.string.arg_id), storeId)  // nos traemos el argumento id de la entidad
+
+        launchEditFragment(args)
 
     }
 
@@ -91,11 +96,12 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
 
     override fun onDeleteStore(storeEntity: StoreEntity) {  // Funcion para eliminar un elemento
         val queue = LinkedBlockingQueue<StoreEntity>()
-        thread {
+        Thread {
             StoreApplication.database.storeDao().deleteStore(storeEntity)
             queue.add(storeEntity)
         }.start()
         mAdapter.delete(queue.take())
+
 
     }
 
@@ -104,5 +110,13 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
      */
     override fun hideFab(isVisible: Boolean) { // configuracion del boton flotante
         if (isVisible) mBinding.idFab.show() else mBinding.idFab.hide()
+    }
+
+    override fun addStore(storeEntity: StoreEntity) { // la usamos para actualizar la vista despues de agregar una tienda
+        mAdapter.add(storeEntity)
+    }
+
+    override fun updateStore(storeEntity: StoreEntity) {
+
     }
 }
