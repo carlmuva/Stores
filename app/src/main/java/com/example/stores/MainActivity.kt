@@ -1,9 +1,16 @@
 package com.example.stores
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Phone
+import android.provider.ContactsContract.CommonDataKinds.Website
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.stores.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
 
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
 
     private fun setupRecyclerView() {  //configuracion del grid
         mAdapter= StoreAdapter(mutableListOf(),this)  //mandamos hablar al adapter
-        mGridLayout=GridLayoutManager(this,2) //configuracion del grid
+        mGridLayout=GridLayoutManager(this,resources.getInteger(R.integer.main_columns)) //configuracion del grid columnas
 
         getStores()
 
@@ -94,14 +101,67 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
         mAdapter.update(queue.take())
     }
 
-    override fun onDeleteStore(storeEntity: StoreEntity) {  // Funcion para eliminar un elemento
-        val queue = LinkedBlockingQueue<StoreEntity>()
-        Thread {
-            StoreApplication.database.storeDao().deleteStore(storeEntity)
-            queue.add(storeEntity)
-        }.start()
-        mAdapter.delete(queue.take())
+    override fun onDeleteStore(storeEntity: StoreEntity) {
+        val items = arrayOf("Eliminar","LLamar","Ir al sitio web") //Arreglo de opciones
+        MaterialAlertDialogBuilder(this)     // Menu de opciones Eliminar, llamar, sitio web
+            .setTitle(R.string.dialog_options_title)
+            .setItems(items, DialogInterface.OnClickListener { dialogInterface, i ->
+                when(i){
 
+                    0->confirmDelete(storeEntity)
+
+                    1->dial(storeEntity.phone)
+
+                    2->goToWebsite(storeEntity.website)
+
+                }
+            }).show()
+
+    }
+
+    private fun dial(phone: String){  // funcion para activar y pasar el numero desde nuestro menu sostenido
+        val callIntent = Intent().apply {
+            action = Intent.ACTION_DIAL
+            data= Uri.parse("tel:$phone")   // le pasamos el numero
+        }
+        if(callIntent.resolveActivity(packageManager)!=null) // valida que exista una aplicacion de telefono disponible para marcar
+            startActivity(callIntent)
+        else
+            Toast.makeText(this,R.string.main_error_no_resolve,Toast.LENGTH_SHORT).show() // Mensaje que se muestra si no se cuenta con una app compatible
+
+    }
+
+    private fun goToWebsite(website: String){ // funcion para abrir el website desde nuestro menu sostenido
+        if(website.isEmpty()){  // valida cuando est5a vacio
+            Toast.makeText(this,R.string.main_error_no_website,Toast.LENGTH_LONG).show()
+        }else {
+            val websiteIntent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = Uri.parse(website)
+            }
+            if(websiteIntent.resolveActivity(packageManager)!=null) // valida que exista una aplicacion de navegador disponible
+                startActivity(websiteIntent)
+            else
+                Toast.makeText(this,R.string.main_error_no_resolve,Toast.LENGTH_SHORT).show() // Mensaje que se muestra si no se cuenta con una app compatible
+
+        }
+    }
+
+    private fun confirmDelete(storeEntity: StoreEntity){// Funcion para eliminar un elemento
+        MaterialAlertDialogBuilder(this)// mensaje de advertencia para eliminar una tienda
+            .setTitle(R.string.dialog_delete_title)
+            .setPositiveButton(R.string.dialog_delete_confirm,DialogInterface.OnClickListener{dialogInterface, i ->  // cuando el usuario acepte eliminar se ejecutara el codigo que eliminara el registro
+
+                val queue = LinkedBlockingQueue<StoreEntity>()
+                Thread {
+                    StoreApplication.database.storeDao().deleteStore(storeEntity)
+                    queue.add(storeEntity)
+                }.start()
+                mAdapter.delete(queue.take())
+
+            })
+            .setNegativeButton(R.string.dialog_delete_cancel, null) // en caso no quiera eliminar el registro solo cerramos el dialog
+            .show()
 
     }
 
@@ -117,6 +177,6 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux {
     }
 
     override fun updateStore(storeEntity: StoreEntity) {
-
+        mAdapter.update(storeEntity)
     }
 }

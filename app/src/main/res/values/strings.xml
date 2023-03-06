@@ -13,4 +13,13 @@
     <string name="menu_save">Save</string>
     <string name="edit_store_message_save_succes">Tienda agregada correctamente.</string>
     <string name="arg_id">key_id</string>
+    <string name="edit_store_message_update_succes">Tienda Actualizada</string>
+    <string name="edit_store_message_valid">Existen campos obligatorios sin llenar.</string>
+    <string name="edit_store_title_edit">Editar tienda</string>
+    <string name="dialog_delete_title">¿Deseas eliminar esta tienda?</string>
+    <string name="dialog_delete_confirm">Eliminar</string>
+    <string name="dialog_delete_cancel">Cancelar</string>
+    <string name="dialog_options_title">¿Que desea hacer?</string>
+    <string name="main_error_no_website">Esta tienda no cuenta con un sitio web.</string>
+    <string name="main_error_no_resolve">No se econtro ninguna app compatible o la direccion Url es invalida.</string>
 </resources>
